@@ -24,7 +24,7 @@ namespace OllamaClient.Windows.ViewModel
 
         public ChatViewModel()
         {
-            Messages = new ObservableCollection<Message>(); // مقداردهی اولیه
+            Messages = new ObservableCollection<Message>();
             SendMessageCommand = new RelayCommand(SendMessage);
         }
 
@@ -33,7 +33,7 @@ namespace OllamaClient.Windows.ViewModel
             if (!string.IsNullOrEmpty(NewMessage))
             {
                 Messages.Add(new Message { Content = NewMessage, IsUserChat = true });
-                NewMessage = ""; // بعد از ارسال پیام، مقدار ورودی پاک شود
+                NewMessage = "";
             }
         }
 
