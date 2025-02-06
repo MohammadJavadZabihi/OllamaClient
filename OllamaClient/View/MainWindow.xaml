@@ -1,0 +1,42 @@
+﻿<Window x:Class="OllamaClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ollama Chat" Height="600" Width="1200"
+        Background="#F2F2F2">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 🔹 بخش چت اصلی -->
+        <Grid Grid.Column="1" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+
+            <!-- نمایش پیام‌ها -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Messages}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="10">
+                                <Border Background="White" Padding="10" CornerRadius="10">
+                                    <TextBlock Text="{Binding Content}" TextWrapping="Wrap" FontSize="14"/>
+                                </Border>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- ورودی پیام -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10">
+                <TextBox Width="700" Height="40" FontSize="14"
+                         Text="{Binding NewMessage, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Width="80" Content="ارسال" Command="{Binding SendMessageCommand}" Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
