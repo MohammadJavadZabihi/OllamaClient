@@ -10,6 +10,7 @@ namespace OllamaClient.Windows.ViewModel
         public ObservableCollection<Message> Messages { get; set; }
 
         private string _newMessage;
+        private bool _isLoading;
         public string NewMessage
         {
             get => _newMessage;
@@ -17,6 +18,16 @@ namespace OllamaClient.Windows.ViewModel
             {
                 _newMessage = value;
                 OnPropertyChanged(nameof(NewMessage));
+            }
+        }
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
             }
         }
 
@@ -32,8 +43,7 @@ namespace OllamaClient.Windows.ViewModel
         {
             if (!string.IsNullOrEmpty(NewMessage))
             {
-                Messages.Add(new Message { Content = NewMessage, IsUserChat = true });
-                NewMessage = "";
+                Messages.Add(new Message { Content = NewMessage, IsUserChat = true});
             }
         }
 
