@@ -20,6 +20,18 @@ namespace OllamaClient.Windows.ViewModel
         private readonly ApiService _apiService;
         private readonly OllamaService _ollamaService;
 
+
+        private Chat _selectedChat;
+        public Chat SelectedChat
+        {
+            get => _selectedChat;
+            set
+            {
+                _selectedChat = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _selectedModel;
         public string SelectedModel
         {
@@ -54,6 +66,8 @@ namespace OllamaClient.Windows.ViewModel
         }
 
         public ICommand SendMessageCommand { get; }
+        public ICommand LoadChatMessagesCommand { get; }
+        public ICommand SelectChatCommand { get; }
 
         public ChatViewModel(ChatDataBaseService chatDataBaseService, ApiService apiService, OllamaService ollamaService)
         {
@@ -64,15 +78,48 @@ namespace OllamaClient.Windows.ViewModel
             _ollamaService = ollamaService;
 
             SendMessageCommand = new RelayCommand(async () => await SendMessage(), () => !string.IsNullOrEmpty(NewMessage));
+            LoadChatMessagesCommand = new RelayCommand(async () => await LoadChatMessages());
+            SelectChatCommand = new RelayCommand<Chat>(async (chat) => await SelectChat(chat));
         }
 
+        private async Task LoadChatMessages()
+        {
+            if (SelectedChat == null) return;
+
+            Messages.Clear();
+            var messages = await _chatDataBaseService.GetMessagesForChat(SelectedChat.ChatId);
+
+            foreach (var message in messages)
+            {
+                Messages.Add(message);
+            }
+        }
+
+        public async Task SelectChat(Chat chat)
+        {
+            if (chat == null) return;
+
+            SelectedChat = chat;
+            await LoadChatMessages();
+        }
 
         private async Task SendMessage()
         {
-            if (string.IsNullOrEmpty(NewMessage))
-                return;
+            if (string.IsNullOrEmpty(NewMessage)) return;
 
             IsLoading = true;
+
+            if (SelectedChat == null)
+            {
+                var newChat = new Chat
+                {
+                    ChatTitle = $"{NewMessage} چت جدید با عنوان" + DateTime.Now.ToString("HH:mm")
+                };
+
+                await _chatDataBaseService.AddChatTitle(new AddChatViewModel { ChatTitle = newChat.ChatTitle, IUserChat = true, Content = NewMessage });
+                Chats.Add(newChat);
+                SelectedChat = newChat;
+            }
 
             var userMessage = new Message
             {
@@ -80,11 +127,12 @@ namespace OllamaClient.Windows.ViewModel
                 IsUserChat = true
             };
             Messages.Add(userMessage);
+
             await _chatDataBaseService.AddChatTitle(new AddChatViewModel
             {
-                ChatTitle = "Chat " + (Messages.Count),
-                Content = NewMessage,
-                IUserChat = true
+                ChatTitle = SelectedChat.ChatTitle,
+                IUserChat = true,
+                Content = NewMessage
             });
 
             var requestData = new
@@ -111,7 +159,7 @@ namespace OllamaClient.Windows.ViewModel
             Messages.Add(botMessage);
             await _chatDataBaseService.AddChatTitle(new AddChatViewModel
             {
-                ChatTitle = "Chat " + (Messages.Count),
+                ChatTitle = SelectedChat.ChatTitle,
                 Content = botContent,
                 IUserChat = false
             });
@@ -126,9 +174,37 @@ namespace OllamaClient.Windows.ViewModel
             var chatList = await _chatDataBaseService.GetMessageTitle();
 
             Chats.Clear();
-            foreach(var chat in chatList)
+            foreach (var chat in chatList)
             {
                 Chats.Add(chat);
+            }
+        }
+
+        public class RelayCommand<T> : ICommand
+        {
+            private readonly Action<T> _execute;
+            private readonly Func<T, bool> _canExecute;
+
+            public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
+            {
+                _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+                _canExecute = canExecute;
+            }
+
+            public bool CanExecute(object parameter)
+            {
+                return _canExecute == null || _canExecute((T)parameter);
+            }
+
+            public void Execute(object parameter)
+            {
+                _execute((T)parameter);
+            }
+
+            public event EventHandler CanExecuteChanged
+            {
+                add { CommandManager.RequerySuggested += value; }
+                remove { CommandManager.RequerySuggested -= value; }
             }
         }
 

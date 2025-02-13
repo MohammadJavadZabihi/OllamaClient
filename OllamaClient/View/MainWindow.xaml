@@ -10,16 +10,28 @@
         </Grid.ColumnDefinitions>
 
         <Grid>
-            <Button x:Name="btnAddChat" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="30" Margin="0 20 30 0" Content="+" FontFamily="Vazir" FontSize="20"  HorizontalContentAlignment="Center" Background="Transparent" Foreground="White" Command="{Binding GetChatTitleCommand}"/>
-            <ScrollViewer>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="7*"/>
+            </Grid.RowDefinitions>
+
+            <Button x:Name="btnAddChat" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="30" Margin="0 20 30 0" Content="+" FontFamily="Vazir" FontSize="20"  HorizontalContentAlignment="Center" Background="Transparent" Foreground="White"/>
+
+            <ScrollViewer Grid.Row="1">
                 <StackPanel>
                     <ItemsControl ItemsSource="{Binding Chats}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="10">
-                                    <Border Padding="5" CornerRadius="6" Background="Gray">
-                                        <TextBlock Text="{Binding ChatTitle}" FontSize="18" Foreground="White"/>
-                                    </Border>
+                                    <Button x:Name="btnChatSelect"
+                        Foreground="White"
+                        Background="Transparent"
+                        HorizontalContentAlignment="Left"
+                        Padding="8"
+                        Content="{Binding ChatTitle}"
+                        FontSize="15"
+                        Command="{Binding DataContext.SelectChatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="{Binding}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -28,7 +40,7 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        
+
         <Grid Grid.Column="1" Background="#272727">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -75,8 +87,8 @@
 
                 <TextBox x:Name="txtSendMessage" Width="700" Height="40" Style="{StaticResource textBoxStyle}" FlowDirection="RightToLeft"
                          Text="{Binding NewMessage, UpdateSourceTrigger=PropertyChanged}" Template="{StaticResource TextBoxTemplate}"/>
-                
-                <Button x:Name="btnSendMessage" Style="{StaticResource buttonStyle}" Width="80" Content="ارسال" Command="{Binding SendMessageCommand}" Margin="5,0,0,0" Click="btnSendMessage_Click"/>
+
+                <Button x:Name="btnSendMessage" Style="{StaticResource buttonStyle}" Width="80" Content="ارسال" Command="{Binding SendMessageCommand}" Margin="5,0,0,0"/>
             </StackPanel>
         </Grid>
     </Grid>

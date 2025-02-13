@@ -31,7 +31,7 @@ namespace OllamaClient
             await ((ChatViewModel)DataContext).GetChatTitle();
         }
 
-        private void btnSendMessage_Click(object sender, RoutedEventArgs e)
+        private async void btnChatSelect_Click(object sender, RoutedEventArgs e)
         {
 
         }

@@ -17,6 +17,6 @@ namespace Ollama.Data.Entities
         public string ChatTitle { get; set; }
 
         public DateTime CreateDate { get; set; } = DateTime.Now;
-        public List<Message> Messages { get; set; } = new List<Message>();
+        public List<Message> Messages { get; set; }
     }
 }

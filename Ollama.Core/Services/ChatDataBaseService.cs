@@ -59,6 +59,7 @@ namespace Ollama.Core.Services
         {
             return await _clientContext.Messages
                 .Where(m => m.ChatId == chatId)
+                .OrderBy(m => m.SendAt)
                 .ToListAsync();
         }
 
@@ -80,6 +81,18 @@ namespace Ollama.Core.Services
         public Task<bool> UpdateChatTitle(string chatTitle)
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<List<Message>> GetMessagesFromChatName(string chatName)
+        {
+            var exixstChat = await _clientContext.Chats.FirstOrDefaultAsync(c => c.ChatTitle == chatName);
+
+            if(exixstChat != null)
+            {
+                return await _clientContext.Messages.Where(m => m.ChatId == exixstChat.ChatId).ToListAsync();
+            }
+
+            return null;
         }
     }
 }

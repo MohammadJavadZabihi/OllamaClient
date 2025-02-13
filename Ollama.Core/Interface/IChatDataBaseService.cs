@@ -10,5 +10,6 @@ namespace Ollama.Core.Interface
         Task<bool> DeleteChatTitle(ChatViewModel deteleChatViewModel);
         Task<List<Chat>> GetMessageTitle();
         Task<int> GetChatTitleId(string chatName);
+        Task<List<Message>> GetMessagesFromChatName(string chatName);
     }
 }

@@ -32,6 +32,28 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="btnChatTitleStyle" TargetType="Button">
+            <Setter Property="Background" Value="#a9a9a9"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontFamily" Value="Vazir"/>
+            <Setter Property="FontWeight" Value="Heavy"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Blue"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="textBoxStyle" TargetType="TextBox">
             <Setter Property="FontFamily" Value="Vazir"/>
             <Setter Property="FontSize" Value="18"/>
