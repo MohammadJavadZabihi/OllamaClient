@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Ollama.Core.Services;
+using OllamaClient.Windows.View;
 using OllamaClient.Windows.ViewModel;
 
 namespace OllamaClient
@@ -9,6 +10,7 @@ namespace OllamaClient
         private ChatDataBaseService _chatDbService = new ChatDataBaseService();
         private ApiService _apiService = new ApiService();
         private OllamaService _ollamaService = new OllamaService();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -31,9 +33,17 @@ namespace OllamaClient
             await ((ChatViewModel)DataContext).GetChatTitle();
         }
 
-        private async void btnChatSelect_Click(object sender, RoutedEventArgs e)
+        private async void btnAddChat_Click(object sender, RoutedEventArgs e)
         {
+            SetChatTitleWindow setChatTitleWindow = new SetChatTitleWindow();
+            setChatTitleWindow.ShowDialog();
 
+            if(string.IsNullOrEmpty(setChatTitleWindow.ChatName))
+            {
+                setChatTitleWindow.ChatName = "چت جدید با عنوان" + DateTime.Now.ToString("HH:mm:ss");
+            }
+
+            await ((ChatViewModel)DataContext).StartNewChat(setChatTitleWindow.ChatName);
         }
     }
 }

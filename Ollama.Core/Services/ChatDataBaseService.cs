@@ -31,27 +31,33 @@ namespace Ollama.Core.Services
                 await _clientContext.Chats.AddAsync(addNewChat);
                 await _clientContext.SaveChangesAsync();
 
-                var addMessage = new Message
+                if(addChatViewModel.Content != null)
                 {
-                    ChatId = addNewChat.ChatId,
-                    Content = addChatViewModel.Content,
-                    IsUserChat = addChatViewModel.IUserChat
-                };
+                    var addMessage = new Message
+                    {
+                        ChatId = addNewChat.ChatId,
+                        Content = addChatViewModel.Content,
+                        IsUserChat = addChatViewModel.IUserChat
+                    };
 
-                await _clientContext.Messages.AddAsync(addMessage);
-                await _clientContext.SaveChangesAsync();
+                    await _clientContext.Messages.AddAsync(addMessage);
+                    await _clientContext.SaveChangesAsync();
+                }
             }
             else
             {
-                var addMessage = new Message
+                if (addChatViewModel.Content != null)
                 {
-                    ChatId = existingChat.ChatId,
-                    Content = addChatViewModel.Content,
-                    IsUserChat = addChatViewModel.IUserChat
-                };
+                    var addMessage = new Message
+                    {
+                        ChatId = existingChat.ChatId,
+                        Content = addChatViewModel.Content,
+                        IsUserChat = addChatViewModel.IUserChat
+                    };
 
-                await _clientContext.Messages.AddAsync(addMessage);
-                await _clientContext.SaveChangesAsync();
+                    await _clientContext.Messages.AddAsync(addMessage);
+                    await _clientContext.SaveChangesAsync();
+                }
             }
         }
 

@@ -1,0 +1,18 @@
+﻿<Window x:Class="OllamaClient.Windows.View.SetChatTitleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OllamaClient.Windows.View"
+        mc:Ignorable="d"
+        Title="SetChatTitleWindow" Height="250" Width="350" WindowStartupLocation="CenterScreen" WindowStyle="None" Background="Transparent">
+    <Border CornerRadius="10" Background="#272727">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="لطفا نام چت خود را انتخواب کنید" Foreground="White" FontFamily="Vazir" HorizontalAlignment="Center" FontSize="15"/>
+            
+            <TextBox x:Name="txtChatName" Width="250" Height="30" Margin="0 20 0 30" Style="{StaticResource textBoxStyle}" Template="{StaticResource TextBoxTemplate}" FlowDirection="RightToLeft" FontFamily="Vazir"/>
+            
+            <Button x:Name="NameSet" Style="{StaticResource buttonStyle}" Content="ثبت" Width="80" FontSize="15" Click="NameSet_Click"/>
+        </StackPanel>
+    </Border>
+</Window>

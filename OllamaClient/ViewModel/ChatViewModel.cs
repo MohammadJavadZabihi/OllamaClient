@@ -1,18 +1,18 @@
 ﻿using Ollama.Core.Services;
 using Ollama.Core.ViewModels;
-using Ollama.Data.Entites;
 using Ollama.Data.Entities;
-using System;
+using OllamaClient.Windows.WPF_Service;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace OllamaClient.Windows.ViewModel
 {
     public class ChatViewModel : INotifyPropertyChanged
     {
+        #region Variable and Dependencies
+
         public ObservableCollection<Message> Messages { get; set; }
         public ObservableCollection<Chat> Chats { get; set; }
 
@@ -65,9 +65,17 @@ namespace OllamaClient.Windows.ViewModel
             }
         }
 
+        #endregion
+
+        #region ICommands
+
         public ICommand SendMessageCommand { get; }
         public ICommand LoadChatMessagesCommand { get; }
         public ICommand SelectChatCommand { get; }
+
+        #endregion
+
+        #region Constructor of class
 
         public ChatViewModel(ChatDataBaseService chatDataBaseService, ApiService apiService, OllamaService ollamaService)
         {
@@ -79,8 +87,12 @@ namespace OllamaClient.Windows.ViewModel
 
             SendMessageCommand = new RelayCommand(async () => await SendMessage(), () => !string.IsNullOrEmpty(NewMessage));
             LoadChatMessagesCommand = new RelayCommand(async () => await LoadChatMessages());
-            SelectChatCommand = new RelayCommand<Chat>(async (chat) => await SelectChat(chat));
+            SelectChatCommand = new CustomeRealyCommand<Chat>(async (chat) => await SelectChat(chat));
         }
+
+        #endregion
+
+        #region LoadMessage Method
 
         private async Task LoadChatMessages()
         {
@@ -95,6 +107,10 @@ namespace OllamaClient.Windows.ViewModel
             }
         }
 
+        #endregion
+
+        #region SelectChat Method
+
         public async Task SelectChat(Chat chat)
         {
             if (chat == null) return;
@@ -103,10 +119,12 @@ namespace OllamaClient.Windows.ViewModel
             await LoadChatMessages();
         }
 
+        #endregion
+
+        #region Send Message Method
+
         private async Task SendMessage()
         {
-            if (string.IsNullOrEmpty(NewMessage)) return;
-
             IsLoading = true;
 
             if (SelectedChat == null)
@@ -169,6 +187,10 @@ namespace OllamaClient.Windows.ViewModel
             await GetChatTitle();
         }
 
+        #endregion
+
+        #region GetChatTitle Method
+
         public async Task GetChatTitle()
         {
             var chatList = await _chatDataBaseService.GetMessageTitle();
@@ -180,33 +202,25 @@ namespace OllamaClient.Windows.ViewModel
             }
         }
 
-        public class RelayCommand<T> : ICommand
+        #endregion
+
+        #region Create New Message Method
+        public async Task StartNewChat(string chatName)
         {
-            private readonly Action<T> _execute;
-            private readonly Func<T, bool> _canExecute;
+            IsLoading = true;
 
-            public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
+            var newChat = new Chat
             {
-                _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-                _canExecute = canExecute;
-            }
+                ChatTitle = $"{chatName}"
+            };
 
-            public bool CanExecute(object parameter)
-            {
-                return _canExecute == null || _canExecute((T)parameter);
-            }
+            await _chatDataBaseService.AddChatTitle(new AddChatViewModel { ChatTitle = newChat.ChatTitle, IUserChat = true, Content = NewMessage });
+            Chats.Add(newChat);
+            SelectedChat = newChat;
 
-            public void Execute(object parameter)
-            {
-                _execute((T)parameter);
-            }
-
-            public event EventHandler CanExecuteChanged
-            {
-                add { CommandManager.RequerySuggested += value; }
-                remove { CommandManager.RequerySuggested -= value; }
-            }
+            IsLoading = false;
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>

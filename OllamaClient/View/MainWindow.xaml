@@ -15,7 +15,7 @@
                 <RowDefinition Height="7*"/>
             </Grid.RowDefinitions>
 
-            <Button x:Name="btnAddChat" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="30" Margin="0 20 30 0" Content="+" FontFamily="Vazir" FontSize="20"  HorizontalContentAlignment="Center" Background="Transparent" Foreground="White"/>
+            <Button x:Name="btnAddChat" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="30" Margin="0 20 30 0" Content="+" FontFamily="Vazir" FontSize="20"  HorizontalContentAlignment="Center" Background="Transparent" Foreground="White" Click="btnAddChat_Click"/>
 
             <ScrollViewer Grid.Row="1">
                 <StackPanel>
@@ -24,14 +24,13 @@
                             <DataTemplate>
                                 <StackPanel Margin="10">
                                     <Button x:Name="btnChatSelect"
-                        Foreground="White"
-                        Background="Transparent"
-                        HorizontalContentAlignment="Left"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
                         Padding="8"
                         Content="{Binding ChatTitle}"
                         FontSize="15"
                         Command="{Binding DataContext.SelectChatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        CommandParameter="{Binding}" />
+                        CommandParameter="{Binding}" Style="{StaticResource btnChatTitleStyle}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
